@@ -19,7 +19,7 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="#">
-                        <img v-bind:src="user.icon" class="layui-nav-img"/>
+                        <img v-bind:src="user.iconPath" class="layui-nav-img"/>
                         <span pc="">{{user.nickName}}</span>
                     </a>
                     <dl class="layui-nav-child">
@@ -133,17 +133,96 @@ export default {
 		return {
 			login: false,
 			user: {
-				icon: "static/images/default_icon.png",
+				iconPath: "static/images/default_icon.png",
 				nickName: "游客"
 			}
 		};
 	},
-	mounted() {
+	mounted() { 
 		var Vue = this;
+		var token = Vue.$localStorage.get("token");
+		var user = Vue.$localStorage.get("user");
+		if(token){
+			Vue.login = true;
+			Vue.user = JSON.parse(user);
+		}
+
 		layui.use(['element', 'layer', 'form'], function () {
 			Vue.$ = layui.jquery;
 			Vue.layer = layui.layer;
 			Vue.form = layui.form;
+
+			layui.element.render();
+
+			// 用户登录表单提交
+			Vue.form.on('submit(formUserLogin)', function (data) {
+				var load = Vue.layer.load(1);
+				Vue.$http.post("api/user/login", data.field)
+					.then((res) => {
+						var result = res.body;
+
+						if(result.success){
+							Vue.$localStorage.set("token", result.data);
+							var header = {"Authorization": "Bearer " + result.data};
+
+							// 获取登录用户信息
+							Vue.$http.get("api/user/info", {headers:header})
+								.then((res) => {
+									var result = res.body;
+									
+									Vue.layer.close(load);
+									if(result.success){
+										if(result.data.iconPath == null){
+											result.data.iconPath = "static/images/default_icon.png";
+										}
+
+										Vue.$localStorage.set("user", JSON.stringify(result.data));
+										
+										Vue.$router.go();
+									}else{
+										Vue.layer.msg(result.msg);
+									}
+								},
+								(err) => {
+									Vue.layer.close(load);
+									Vue.layer.msg("网络异常");
+								});
+						}else{
+							Vue.layer.msg(result.msg);
+						}
+					},
+					(err) => {
+						Vue.layer.close(load);
+						Vue.layer.msg("网络异常");
+					});
+
+				return false;
+			});
+
+			// 用户注册表单提交
+			Vue.form.on('submit(formUserRegist)', function (data) {
+				var load = Vue.layer.load(1);
+				// 提交注册信息
+				Vue.$http.post("api/user/reg", data.field)
+					.then((res) => {
+						var result = res.body;
+						
+						Vue.layer.close(load);
+						if(result.success){
+							Vue.layer.msg("恭喜您,注册成功!");
+							
+							Vue.$router.go();
+						}else{
+							Vue.layer.msg(result.msg);
+						}
+					},
+					(err) => {
+						Vue.layer.close(load);
+						Vue.layer.msg("网络异常");
+					});
+
+				return false;
+			});
 		});
 	},
 	methods: {
@@ -152,33 +231,18 @@ export default {
 
 		},
 		linkMyCMD: function(){
-
+			this.$router.push("/user/console/index");
 		},
 		btnUserLogout: function(e){
-			layui.use(['element', 'layer', 'form'], function () {
-				var $ = layui.jquery;
-				var layer = layui.layer;
-				var form = layui.form;
+			this.$localStorage.remove("user", null);
+			this.$localStorage.remove("token", null);
 
-				e.preventDefault();
-
-				var load = layer.load(1);
-				$.ajax({
-					url: "/api/user/logout",
-					type: "PUT",
-					dataType: "json",
-					success: function (data) {
-						layer.close(load);
-						window.location.href = "/index";
-						return false;
-					}
-				});
-			});
+			this.$router.go();
 		},
 		btnLogin: function(e){
-			var modalLogin = $("#modal-login");
+			var modalLogin = this.$("#modal-login");
 
-			layer.open({
+			this.layer.open({
 				type: 1,
 				title: "用户登录",
 				skin: 'layui-layer-rim',
@@ -186,60 +250,12 @@ export default {
 				content: modalLogin.html()
 			});
 
-			$("#inputLoginAccount").focus();
-
-				// 用户登录表单提交
-				form.on('submit(formUserLogin)', function (data) {
-					var load = layer.load(1);
-					$.ajax({
-						url: "/api/user/login",
-						type: "POST",
-						data: JSON.stringify(data.field),
-						traditional: true,
-						dataType: "json",
-						contentType: "application/json;charset=UTF-8",
-						success: function (data) {
-							layer.close(load);
-							if (data.success) {
-								window.location.href = "/index";
-								return false;
-							} else {
-								layer.msg(data.msg);
-							}
-						}
-					});
-
-					return false;
-				});
-
-				// 用户注册表单提交
-				form.on('submit(formUserRegist)', function (data) {
-					var load = layer.load(1);
-					$.ajax({
-						url: "/api/user/regist",
-						type: "POST",
-						data: JSON.stringify(data.field),
-						traditional: true,
-						dataType: "json",
-						contentType: "application/json;charset=UTF-8",
-						success: function (data) {
-							layer.close(load);
-							if (data.success) {
-								window.location.href = "/index";
-								return false;
-							} else {
-								layer.msg(data.msg);
-							}
-						}
-					});
-
-					return false;
-				});
+			this.$("#inputLoginAccount").focus();
 		},
 		btnRegist: function(e){
 			var modalRegist = this.$("#modal-regist");
 
-			layer.open({
+			this.layer.open({
 				type: 1,
 				title: "用户注册",
 				skin: 'layui-layer-rim',
