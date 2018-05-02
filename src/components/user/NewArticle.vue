@@ -26,6 +26,7 @@
 					<div class="layui-input-inline">
 						<select data-active="0" id="selectColumn2" lay-filter="selectColumn2">
 							<option value="">无</option>
+                            <option v-for="col in col2" :key="col.id" :value="col.id">{{col.title}}</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -62,11 +63,12 @@
 							<input id="inputLabel" type="text" placeholder="输入标签名称..." autocomplete="off" class="layui-input" />
 						</div>
 						<div class="layui-input-inline" style="width:52px;">
-							<a id="btnAddLabel" class="layui-btn">＋</a>
+							<a @click.prevent="btnAddLabel" class="layui-btn">＋</a>
 						</div>
 					</div>
 					<div class="layui-inline">
 						<div id="boxLabel" class="layui-btn-container">
+                            <a v-for="(label, index) in labels" :key="index" @click.prevent="btnDeleteLabel(label)" style="margin-bottom:0px;" class="layui-btn layui-bg-blue" :data-label="label">{{label}} X</a>
 						</div>
 					</div>
 				</div>
@@ -144,7 +146,8 @@ export default {
 	data() {
 		return {
             col1:[{id:123, title:"abc"}],
-            text: "555"
+            col2:[],
+            labels:[],
         };
 	},
 	mounted() {
@@ -160,7 +163,6 @@ export default {
             var selectColumn1 = $("#selectColumn1");
             var selectColumn2 = $("#selectColumn2");
             var inputColumnHidden = $("#inputColumnHidden");
-            var inputLabelHidden = $("#inputLabelHidden")
 
             // 初始化隐藏
             $("#divReprintUrl").hide();
@@ -185,117 +187,103 @@ export default {
                     Vue.layer.close(load);
                     Vue.layer.msg("网络异常");
                 });
+
+            // 文章类型选择框改变选项
+            Vue.form.on('select(selectTypeFlag)', function (data) {
+                var v = data.value;
+                if (v == 1) {
+                    $("#divReprintUrl").hide();
+                    $("#divTranslateUrl").hide();
+                } else if (v == 2) {
+                    $("#divReprintUrl").show();
+                    $("#divTranslateUrl").hide();
+                } else if (v == 3) {
+                    $("#divReprintUrl").hide();
+                    $("#divTranslateUrl").show();
+                }
+            });
+
+            // 一级栏目选择框改变
+            Vue.form.on('select(selectColumn1)', function (data) {
+                var v = data.value;
+
+                if (!v || v == null || v == undefined || v == "") {
+                    selectColumn2.data("active", "0");
+                    selectColumn2.parent().hide();
+                    inputColumnHidden.val("");
+                    return false;
+                }
+
+                inputColumnHidden.val(v);
+
+                Vue.$http.get("api/user/col2?id=" + v)
+                    .then((res) => {
+                        let result = res.body;
+
+                        if (!result || result.length == 0) {
+                            selectColumn2.data("active", "0");
+                            selectColumn2.parent().hide();
+                        } else {
+                            selectColumn2.data("active", "1");
+                            selectColumn2.parent().show();
+                            Vue.col2 = result;
+                            Vue.$nextTick(() => {
+                                Vue.form.render('select');
+                            });
+                        }
+                        
+                        return false;
+                    },
+                    (err) => {
+                        Vue.layer.close(load);
+                        Vue.layer.msg("网络异常");
+                    });
+            });
+
+            // 二级栏目选择框改变
+            Vue.form.on('select(selectColumn2)', function (data) {
+                var v = data.value;
+
+                if (!v || v == null || v == undefined || v == "") {
+                    inputColumnHidden.val(selectColumn1.val());
+                    return false;
+                }
+
+                inputColumnHidden.val(v);
+            });
+
+            // 新增文章表单提交
+            Vue.form.on('submit(formNewArticle)', function (data) {
                 
-            // 更新当前标签信息函数
-            var updateLabelHidden = function () {
-                var boxLabel = $("#boxLabel").children();
-                var str = "";
-                $.each(boxLabel, function (i, obj) {
-                    str += $(obj).data("label") + ";;";
-                });
 
-                inputLabelHidden.val(str);
-            }
+                data.field["userColumn"] = !data.field["columnId"] ? null : {
+                    id: data.field["columnId"]
+                };
 
-            // // 文章类型选择框改变选项
-            // form.on('select(selectTypeFlag)', function (data) {
-            //     var v = data.value;
-            //     if (v == 1) {
-            //         $("#divReprintUrl").hide();
-            //         $("#divTranslateUrl").hide();
-            //     } else if (v == 2) {
-            //         $("#divReprintUrl").show();
-            //         $("#divTranslateUrl").hide();
-            //     } else if (v == 3) {
-            //         $("#divReprintUrl").hide();
-            //         $("#divTranslateUrl").show();
-            //     }
-            // });
+                data.field["content"] = data.field["EditorMD-markdown-doc"];
 
-            // // 一级栏目选择框改变
-            // form.on('select(selectColumn1)', function (data) {
-            //     var v = data.value;
+                var load = layer.load(1);
+                Vue.$http.post("api/article", data.field)
+                    .then((res) => {
+                        let result = res.body;
 
-            //     if (!v || v == null || v == undefined || v == "") {
-            //         selectColumn2.data("active", "0");
-            //         selectColumn2.parent().hide();
-            //         inputColumnHidden.val("");
-            //         return false;
-            //     }
+                        layer.close(load);
+                        if (result.success) {
+                            //window.location.href = "/user/article_list";
+                            layer.msg(result.msg);
+                        } else {
+                            layer.msg(result.msg);
+                        }
+                        
+                        return false;
+                    },
+                    (err) => {
+                        Vue.layer.close(load);
+                        Vue.layer.msg("网络异常");
+                    });
 
-            //     inputColumnHidden.val(v);
-
-            //     $.ajax({
-            //         url: "/api/user/col2",
-            //         type: "GET",
-            //         data: { "id": v },
-            //         dataType: "json",
-            //         success: function (data) {
-            //             if (data.success) {
-            //                 if (!data.data || data.data.length == 0) {
-            //                     selectColumn2.data("active", "0");
-            //                     selectColumn2.parent().hide();
-            //                 } else {
-            //                     selectColumn2.data("active", "1");
-            //                     selectColumn2.parent().show();
-            //                     selectColumn2.html("");
-            //                     selectColumn2.append('<option value="">无</option>');
-            //                     for (var d of data.data) {
-            //                         selectColumn2.append('<option value="' + d.id + '">' + d.title + '</option>');
-            //                     }
-            //                     form.render('select');
-            //                 }
-            //                 return false;
-            //             } else {
-            //                 layer.msg(data.msg);
-            //             }
-            //         }
-            //     });
-            // });
-
-            // // 二级栏目选择框改变
-            // form.on('select(selectColumn2)', function (data) {
-            //     var v = data.value;
-
-            //     if (!v || v == null || v == undefined || v == "") {
-            //         inputColumnHidden.val(selectColumn1.val());
-            //         return false;
-            //     }
-
-            //     inputColumnHidden.val(v);
-            // });
-
-            // // 新增文章表单提交
-            // form.on('submit(formNewArticle)', function (data) {
-            //     console.log(data.field);
-
-            //     data.field["userColumn"] = !data.field["columnId"] ? null : {
-            //         id: data.field["columnId"]
-            //     };
-
-            //     data.field["content"] = data.field["editor-md-markdown-doc"];
-
-            //     var load = layer.load(1);
-            //     $.ajax({
-            //         url: "/api/article/new",
-            //         type: "POST",
-            //         data: JSON.stringify(data.field),
-            //         traditional: true,
-            //         dataType: "json",
-            //         contentType: "application/json;charset=UTF-8",
-            //         success: function (data) {
-            //             layer.close(load);
-            //             if (data.success) {
-            //                 window.location.href = "/user/article_list";
-            //                 return false;
-            //             } else {
-            //                 layer.msg(data.msg);
-            //             }
-            //         }
-            //     });
-
-            //     return false;
-            // });
+                return false;
+            });
 
             // 新增栏目表单提交
             Vue.form.on('submit(formAddColumn)', function (data) {
@@ -344,21 +332,31 @@ export default {
             if (str) {
                 str = str.trim();
 
-                if (str.length > 16 || str.length == 0) {
-                    layer.msg("标签文本长度限定1-16个字符");
+                if (str.length > 64 || str.length == 0) {
+                    this.layer.msg("标签文本长度限定1-64个字符");
                     return;
                 }
 
-                var node = $('<a style="margin-bottom:0px;" class="layui-btn layui-bg-blue" data-label="' + str + '">' + str + ' X</a>');
-                boxLabel.append(node);
-                node.on("click", function (e) {
-                    e.preventDefault();
-                    $(this).remove();
-                    updateLabelHidden();
-                });
+                if(this.labels.indexOf(str) < 0){
+                    this.labels.push(str);
+                    this.updateLabelHidden();
+                }
+
                 inputLabel.val("");
-                updateLabelHidden();
             }
+        },
+        btnDeleteLabel: function(label){
+            this.labels.splice(this.labels.indexOf(label), 1);
+            this.updateLabelHidden();
+        },
+        updateLabelHidden: function () {
+            var boxLabel = $("#boxLabel").children();
+            var str = "";
+            $.each(boxLabel, function (i, obj) {
+                str += $(obj).data("label") + ";;";
+            });
+
+            $("#inputLabelHidden").val(str);
         }
     }
 };

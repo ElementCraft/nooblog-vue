@@ -4,6 +4,7 @@ import VueLocalStorage from 'vue-localstorage'
 
 import App from './App'
 import EditorMD from './EditorMD'
+import EditorMDPreview from './EditorMDPreview'
 import router from './router'
 import globals from './globals'
 import jQuery from 'static/jquery.min'
@@ -14,6 +15,7 @@ global.$ = jQuery;
 Vue.use(VueResource);
 Vue.use(VueLocalStorage)
 Vue.component("EditorMD", EditorMD)
+Vue.component("EditorMDPreview", EditorMDPreview)
 
 Vue.config.productionTip = false
 Vue.prototype.globals = globals

@@ -4046,7 +4046,7 @@
     // Preview area themes
     // added @1.5.0
     editormd.previewThemes = ["default", "dark"];
-    
+     
     // CodeMirror / editor area themes
     // @1.5.0 rename -> editorThemes, old version -> themes
     editormd.editorThemes = [

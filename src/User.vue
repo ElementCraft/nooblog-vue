@@ -26,14 +26,14 @@
 							<a href="javascript:;">快速入口</a>
 							<dl class="layui-nav-child">
 								<dd><a th:href="@{/user/edit_profile}" class="layui-this">编辑资料</a></dd>
-								<dd><a th:href="@{/user/new_article}">新增文章</a></dd>
+								<dd><router-link to="/user/console/newArticle">新增文章</router-link></dd>
 							</dl>
 						</li>
 						<li class="layui-nav-item">
 							<a class="" href="javascript:;">信息管理</a>
 							<dl class="layui-nav-child">
 								<dd><a th:href="@{/user/profile}">个人资料</a></dd>
-								<dd><a th:href="@{/user/article_list}">文章列表</a></dd>
+								<dd><router-link to="/user/console/articleList">文章列表</router-link></dd>
 								<dd><a th:href="@{/user/favorite_list}">我的收藏</a></dd>
 								<dd><a th:href="@{/user/attention_list}">我的关注</a></dd>
 								<dd><a th:href="@{/user/fans_list}">我的Fans</a></dd>
