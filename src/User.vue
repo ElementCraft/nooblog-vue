@@ -8,7 +8,8 @@
 
 					<li class="layui-nav-item" th:if="${session.user ne null}">
 						<a href="javascript:;">
-							<img v-bind:src="user.iconPath" class="layui-nav-img"/>
+							<img v-if="user.iconPath != null" :src="this.$http.options.root + user.iconPath" class="layui-nav-img"/>
+							<img v-else src="static/images/default_icon.png" class="layui-nav-img"/>
                         	<span >{{user.nickName}}</span>
 						</a>
 						<dl class="layui-nav-child">
@@ -25,14 +26,14 @@
 						<li class="layui-nav-item layui-nav-itemed">
 							<a href="javascript:;">快速入口</a>
 							<dl class="layui-nav-child">
-								<dd><a th:href="@{/user/edit_profile}" class="layui-this">编辑资料</a></dd>
+								<dd><router-link to="/user/console/editProfile">编辑资料</router-link></dd>
 								<dd><router-link to="/user/console/newArticle">新增文章</router-link></dd>
 							</dl>
 						</li>
 						<li class="layui-nav-item">
 							<a class="" href="javascript:;">信息管理</a>
 							<dl class="layui-nav-child">
-								<dd><a th:href="@{/user/profile}">个人资料</a></dd>
+								<dd><router-link to="/user/console/profile">个人资料</router-link></dd>
 								<dd><router-link to="/user/console/articleList">文章列表</router-link></dd>
 								<dd><a th:href="@{/user/favorite_list}">我的收藏</a></dd>
 								<dd><a th:href="@{/user/attention_list}">我的关注</a></dd>
@@ -100,7 +101,7 @@ export default {
 			this.$localStorage.remove("user", null);
 			this.$localStorage.remove("token", null);
 
-			this.$router.go();
+			this.$router.replace("/");
 		}
 	}
 }

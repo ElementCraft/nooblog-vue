@@ -140,30 +140,6 @@ export default {
                     });
                 }
             });
-
-            // 新增管理员表单提交
-            Vue.form.on('submit(formNewAdmin)', function (data) {
-                var load = layer.load(1);
-                $.ajax({
-                    url: "/api/admin/new",
-                    type: "POST",
-                    data: JSON.stringify(data.field),
-                    traditional: true,
-                    dataType: "json",
-                    contentType: "application/json;charset=UTF-8",
-                    success: function (data) {
-                        layer.close(load);
-                        if (data.success) {
-                            window.location.href = "/admin/admin_list";
-                            return false;
-                        } else {
-                            layer.msg(data.msg);
-                        }
-                    }
-                });
-
-                return false;
-            });
         });
     },
     methods: {

@@ -7,6 +7,7 @@ import Index from '@/components/Index'
 import AdminLogin from '@/components/AdminLogin'
 import UserCMD_Index from '@/components/user/Index'
 import UserCMD_Profile from '@/components/user/Profile'
+import UserCMD_EditProfile from '@/components/user/EditProfile'
 import UserCMD_NewArticle from '@/components/user/NewArticle'
 import UserCMD_ArticleList from '@/components/user/ArticleList'
 
@@ -32,7 +33,7 @@ export default new Router({
 				{ path: 'profile', component: UserCMD_Profile },
 				{ path: 'newArticle', component: UserCMD_NewArticle },
 				{ path: 'articleList', component: UserCMD_ArticleList },
-				//{ path: 'editProfile', component: UserCMD_EditProfile },
+				{ path: 'editProfile', component: UserCMD_EditProfile },
 			]
 		}
 	]

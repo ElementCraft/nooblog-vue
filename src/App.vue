@@ -19,7 +19,8 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="#">
-                        <img v-bind:src="user.iconPath" class="layui-nav-img"/>
+                        <img v-if="user.iconPath != null" :src="this.$http.options.root + user.iconPath" class="layui-nav-img"/>
+						<img v-else src="static/images/default_icon.png" class="layui-nav-img"/>
                         <span pc="">{{user.nickName}}</span>
                     </a>
                     <dl class="layui-nav-child">
@@ -172,9 +173,6 @@ export default {
 									
 									Vue.layer.close(load);
 									if(result.success){
-										if(result.data.iconPath == null){
-											result.data.iconPath = "static/images/default_icon.png";
-										}
 
 										Vue.$localStorage.set("user", JSON.stringify(result.data));
 										

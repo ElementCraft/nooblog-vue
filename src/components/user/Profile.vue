@@ -11,7 +11,8 @@
 					<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
 					<div class="layui-timeline-content layui-text">
 						<h3 class="layui-timeline-title">头像</h3>
-						<img :src="user.iconPath" :alt="user.nickName"/>
+						<img class="imgIcon" v-if="user.iconPath != null" :src="this.$http.options.root + user.iconPath" alt="头像">
+                        <img class="imgIcon" v-else src="static/images/default_icon.png" alt="头像">
 					</div>
 				</li>
 				<li class="layui-timeline-item">
@@ -49,7 +50,7 @@
 				<li class="layui-timeline-item">
 					<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
 					<div class="layui-timeline-content layui-text">
-					<div class="layui-timeline-title">菜鸟博客 &copy; blog.noobug.org</div>
+					<div class="layui-timeline-title">菜鸟博客 &copy;</div>
 					</div>
 				</li>
 			</ul>
@@ -96,7 +97,7 @@
 				<li class="layui-timeline-item">
 					<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
 					<div class="layui-timeline-content layui-text">
-					<div class="layui-timeline-title">菜鸟博客 &copy; blog.noobug.org</div>
+					<div class="layui-timeline-title">菜鸟博客 &copy;</div>
 					</div>
 				</li>
 			</ul>
@@ -128,7 +129,6 @@ export default {
                     var result = res.body;
 					
 					if(result.success){
-						result.data.iconPath = result.data.iconPath || "static/images/default_icon.png";
 						result.data.gmtCreate = new Date(result.data.gmtCreate * 1000).Format("yyyy年MM月dd日 hh:mm:ss");
 						Vue.user = result.data;
 					}else{
@@ -147,4 +147,8 @@ export default {
 </script>
 
 <style scoped>
+.imgIcon{
+	width: 96px;
+	height: 96px;
+}
 </style>
