@@ -62,7 +62,6 @@ export default {
 					$("#EditorMDPreview").prop('outerHTML','<div id="EditorMDPreview"></div>');
 
 					Vue.previewInstance = editorMD.markdownToHTML("EditorMDPreview", cfg);
-
 					if(callback) callback();
 				}
 			});

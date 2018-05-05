@@ -168,25 +168,8 @@ export default {
             $("#divReprintUrl").hide();
             $("#divTranslateUrl").hide();
             selectColumn2.parent().hide();
-
-            var load = Vue.layer.load(1);
-            // 初始化一级栏目
-            Vue.$http.get("api/user/col1")
-                .then((res) => {
-                    Vue.layer.close(load);
-
-                    var result = res.body;
-                    Vue.col1 = result;
-                    
-                    Vue.$nextTick(function(){
-                        Vue.form.render('select');
-                    });
-                    
-                },
-                (err) => {
-                    Vue.layer.close(load);
-                    Vue.layer.msg("网络异常");
-                });
+            
+            Vue.initCol1();
 
             // 文章类型选择框改变选项
             Vue.form.on('select(selectTypeFlag)', function (data) {
@@ -216,28 +199,7 @@ export default {
 
                 inputColumnHidden.val(v);
 
-                Vue.$http.get("api/user/col2?id=" + v)
-                    .then((res) => {
-                        let result = res.body;
-
-                        if (!result || result.length == 0) {
-                            selectColumn2.data("active", "0");
-                            selectColumn2.parent().hide();
-                        } else {
-                            selectColumn2.data("active", "1");
-                            selectColumn2.parent().show();
-                            Vue.col2 = result;
-                            Vue.$nextTick(() => {
-                                Vue.form.render('select');
-                            });
-                        }
-                        
-                        return false;
-                    },
-                    (err) => {
-                        Vue.layer.close(load);
-                        Vue.layer.msg("网络异常");
-                    });
+                Vue.initCol2(v);
             });
 
             // 二级栏目选择框改变
@@ -269,7 +231,7 @@ export default {
 
                         layer.close(load);
                         if (result.success) {
-                            //window.location.href = "/user/article_list";
+                            Vue.$router.push("/user/console/articleList");
                             layer.msg(result.msg);
                         } else {
                             layer.msg(result.msg);
@@ -291,10 +253,19 @@ export default {
                 Vue.$http.post("api/user/column", data.field)
                     .then((res) => {
                         var result = res.body;
-                        console.log(result);
+                        
                         Vue.layer.close(load);
                         if(result.success){
                             Vue.layer.msg(result.msg);
+
+                            // 更新栏目下拉框
+                            if(data.field.parentId){
+                                Vue.initCol2(data.field.parentId);
+                            }else{
+                                Vue.initCol1();
+                            }
+                            
+                            Vue.layer.close(Vue.idxModalAddColumn);
                         }else{
                             Vue.layer.msg(result.msg);
                         }
@@ -357,13 +328,65 @@ export default {
             });
 
             $("#inputLabelHidden").val(str);
+        },
+        initCol1: function(){
+            // 初始化一级栏目
+            var load = this.layer.load(1);
+            this.$http.get("api/user/col1")
+                .then((res) => {
+                    this.layer.close(load);
+
+                    var result = res.body;
+                    this.col1 = result;
+                    
+                    this.$nextTick(function(){
+                        this.form.render('select');
+                    });
+                    
+                },
+                (err) => {
+                    this.layer.close(load);
+                    this.layer.msg("网络异常");
+                });
+        },
+        initCol2: function(col1){
+            this.$http.get("api/user/col2?id=" + col1)
+                .then((res) => {
+                    let result = res.body;
+                    let selectColumn2 = $("#selectColumn2");
+
+                    if (!result || result.length == 0) {
+                        selectColumn2.data("active", "0");
+                        selectColumn2.parent().hide();
+                    } else {
+                        selectColumn2.data("active", "1");
+                        selectColumn2.parent().show();
+                        this.col2 = result;
+                        this.$nextTick(() => {
+                            this.form.render('select');
+                        });
+                    }
+                    
+                    return false;
+                },
+                (err) => {
+                    this.layer.close(load);
+                    this.layer.msg("网络异常");
+                });
         }
     }
 };
 </script>
 
 <style scoped>
-body {
-	background-color: lightblue;
+h1.admin-header{
+    border-bottom: 2px solid #009688;
+    padding-bottom: 12px;
+    color: #009688;
+}
+
+img.small-icon{
+    width: 32px;
+    height: 32px;
 }
 </style>

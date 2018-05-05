@@ -128,7 +128,7 @@ export default {
 
                     var result = res.body;
 					
-					if(result.success){
+					if(result.success){ 
 						result.data.gmtCreate = new Date(result.data.gmtCreate * 1000).Format("yyyy年MM月dd日 hh:mm:ss");
 						Vue.user = result.data;
 					}else{

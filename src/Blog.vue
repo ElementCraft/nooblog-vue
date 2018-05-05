@@ -56,9 +56,9 @@
 				<router-view/>
 			</div>
 
-			<div class="layui-footer" style="text-align:center;">
+			<div class="layui-footer">
 				<!-- 底部固定区域 -->
-    			© blog.noobug.org - 菜鸟博客
+    			© layui.com - 底部固定区域
 			</div>
 		</div>
 

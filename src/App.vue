@@ -28,7 +28,7 @@
                             <a href="javascript:;" @click.prevent="linkMyBlog">我的博客</a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" @click.prevent="linkMyCMD">我的控制台</a>
+                            <router-link to="/user/console/profile" target="_blank">我的控制台</router-link>
                         </dd>
                         <dd>
                             <a href="javascript:;" @click.prevent="btnUserLogout">退出登录</a>
@@ -124,6 +124,17 @@
 		</div>
 
 		<router-view/>
+
+		<div class="layui-footer footer footer-doc">
+            <p>© 2017
+                <a href="/">blog.noobug.org</a> 闽ICP备17017285</p>
+            <p>转载文章请注明出处</p>
+            <p>
+                <a href="http://fly.layui.com/jie/3147.html" target="_blank">捐赠我们</a>
+                <a href="mailto:976228284@qq.com">联系站长</a>
+                <a href="http://fly.layui.com/jie/4281.html" target="_blank">Git仓库</a>
+            </p>
+        </div>
 	</div>
 </template>
 
@@ -297,5 +308,18 @@ img.nav-logo{
 /* 导航栏靠右菜单 */
 .nav-right{
 	float: right;
+}
+
+.footer{
+	padding: 10px 0;
+	line-height: 24px;
+	text-align: center;
+	background-color: #eee;
+	color: #666;
+	font-weight: 300;
+}
+
+.footer a{
+	padding: 0 5px;
 }
 </style>

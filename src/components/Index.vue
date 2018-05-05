@@ -78,7 +78,21 @@
 
 					<div class="content-body">
 						<ul id="ulNewestArticle" class="layui-timeline">
-							
+							<li v-for="article in newestArticles" :key="article.id" class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+								<div class="layui-timeline-content">
+									<h3 class="layui-timeline-title"><router-link :to="'/article/'+article.id">{{article.title}}</router-link></h3>
+									<p>
+										<span class="art-span art-author layui-elip">{{article.userColumn.user.nickName}}</span>
+										<span class="art-span art-time layui-elip">{{article.gmtCreate}}</span>
+										<span class="art-span art-label layui-elip" pc="">{{article.userColumn.title}}</span>
+										<span class="art-span art-count">
+											<i class="layui-icon">&#xe6c6;</i> {{article.goodNumber}} &nbsp;&nbsp;
+											<i class="layui-icon">&#xe611;</i> {{article.commentNumber}}
+										</span>
+									</p>
+								</div>
+							</li>
 						</ul>
 					</div>
 
@@ -88,47 +102,17 @@
 
 					<div class="content-body">
 						<ul class="layui-timeline">
-							<li class="layui-timeline-item">
+							<li v-for="article in hotArticles" :key="article.id" class="layui-timeline-item">
 								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-								<div class="layui-timeline-content layui-text">
-									<h3 class="layui-timeline-title">layui 2.0 的一切准备工作似乎都已到位。发布之弦，一触即发。</h3>
+								<div class="layui-timeline-content">
+									<h3 class="layui-timeline-title"><router-link :to="'/article/'+article.id">{{article.title}}</router-link></h3>
 									<p>
-										<span class="art-span art-author layui-elip">代达罗斯之殇123123123</span>
-										<span class="art-span art-time layui-elip">1秒前</span>
-										<span class="art-span art-label layui-elip" pc="">Unity</span>
+										<span class="art-span art-author layui-elip">{{article.userColumn.user.nickName}}</span>
+										<span class="art-span art-time layui-elip">{{article.gmtCreate}}</span>
+										<span class="art-span art-label layui-elip" pc="">{{article.userColumn.title}}</span>
 										<span class="art-span art-count">
-											<i class="layui-icon">&#xe6c6;</i> 35 &nbsp;&nbsp;
-											<i class="layui-icon">&#xe611;</i> 11
-										</span>
-									</p>
-								</div>
-							</li>
-							<li class="layui-timeline-item">
-								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-								<div class="layui-timeline-content layui-text">
-									<h3 class="layui-timeline-title">杜甫的思想核心是儒家的仁政思想，他有“</h3>
-									<p>
-										<span class="art-span art-author layui-elip">代达罗斯之殇</span>
-										<span class="art-span art-time layui-elip">1秒前</span>
-										<span class="art-span art-label layui-elip" pc="">Unity</span>
-										<span class="art-span art-count">
-											<i class="layui-icon">&#xe6c6;</i> 35 &nbsp;&nbsp;
-											<i class="layui-icon">&#xe611;</i> 11
-										</span>
-									</p>
-								</div>
-							</li>
-							<li class="layui-timeline-item">
-								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-								<div class="layui-timeline-content layui-text">
-									<h3 class="layui-timeline-title">8月15日</h3>
-									<p>
-										<span class="art-span art-author layui-elip">代达罗斯之殇</span>
-										<span class="art-span art-time layui-elip">1秒前</span>
-										<span class="art-span art-label layui-elip" pc="">Unity</span>
-										<span class="art-span art-count">
-											<i class="layui-icon">&#xe6c6;</i> 35 &nbsp;&nbsp;
-											<i class="layui-icon">&#xe611;</i> 11
+											<i class="layui-icon">&#xe6c6;</i> {{article.goodNumber}} &nbsp;&nbsp;
+											<i class="layui-icon">&#xe611;</i> {{article.commentNumber}}
 										</span>
 									</p>
 								</div>
@@ -144,7 +128,7 @@
 						<div class="layui-row">
 							<div class="layui-col-lg3 layui-col-md3 layui-col-sm3 layui-col-xs6">
 								<div class="user-profile">
-									<img src="images/default_icon.png" alt="头像" />
+									<img src="static/images/default_icon.png" alt="头像" />
 									<br/>
 									<br/>
 									<span>代达罗斯之殇</span>
@@ -157,7 +141,7 @@
 							</div>
 							<div class="layui-col-lg3 layui-col-md3 layui-col-sm3 layui-col-xs6">
 								<div class="user-profile">
-									<img src="images/i1.jpg" alt="头像" />
+									<img src="static/images/default_icon.png" alt="头像" />
 									<br/>
 									<br/>
 									<span>天零萃梦</span>
@@ -170,7 +154,7 @@
 							</div>
 							<div class="layui-col-lg3 layui-col-md3 layui-col-sm3 layui-col-xs6">
 								<div class="user-profile">
-									<img src="images/i2.jpg" alt="头像" />
+									<img src="static/images/i2.jpg" alt="头像" />
 									<br/>
 									<br/>
 									<span>武穆雪</span>
@@ -183,7 +167,7 @@
 							</div>
 							<div class="layui-col-lg3 layui-col-md3 layui-col-sm3 layui-col-xs6">
 								<div class="user-profile">
-									<img src="images/default_icon.png" alt="头像" />
+									<img src="static/images/default_icon.png" alt="头像" />
 									<br/>
 									<br/>
 									<span>代达罗斯之殇</span>
@@ -205,9 +189,13 @@
 
 <script>
 export default {
-	name: "AdminLogin",
+	name: "Index",
 	data() {
-		return {};
+		return {
+			newestArticles:[],
+			hotArticles:[],
+			suggestUsers:[]
+		};
 	},
 	mounted() {
 		var Vue = this;
@@ -218,33 +206,39 @@ export default {
 			var layer = layui.layer;
 			var $ = layui.jquery;
 
-			// 管理员登录提交
-			form.on("submit(formAdminLogin)", function(data) {
-				var load = layer.load(1);
+			Vue.$http.get("api/article/all?page=0&size=5")
+				.then((res) => {
+					let result = res.body;
+					let articles = result.content;
 
-				$.ajax({
-					url: Vue.globals.BaseUrl + "/api/user/login",
-					type: "POST",
-					data: JSON.stringify(data.field),
-					traditional: true,
-					dataType: "json",
-					contentType: "application/json;charset=UTF-8",
-					headers: {
-						"Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3amgxMjMiLCJhdXRocyI6IiIsImlzcyI6Im5vb2J1Zy5jb20iLCJleHAiOjE1MjM0NDgwOTh9.oZWy2TGyLUf4hJyyn_OCWPLOS129r7Z4-e5Nndwd2xc"
-					},
-					success: function(data) {
-						layer.close(load);
-						if (data.success) {
-							this.$router.push("/admin/");
-							return false;
-						} else {
-							layer.msg(data.msg);
-						}
-					}
+					articles.map(article => {
+						article.gmtCreate = CountAgo(article.gmtCreate);
+						return article;
+					});
+
+					Vue.newestArticles = result.content;
+				},
+				(err) => {
+					Vue.layer.close(load);
+					Vue.layer.msg("网络异常");
 				});
 
-				return false;
-			});
+			Vue.$http.get("api/article/hot?page=0&size=5")
+				.then((res) => {
+					let result = res.body;
+					let articles = result.content;
+
+					articles.map(article => {
+						article.gmtCreate = CountAgo(article.gmtCreate);
+						return article;
+					});
+
+					Vue.hotArticles = result.content;
+				},
+				(err) => {
+					Vue.layer.close(load);
+					Vue.layer.msg("网络异常");
+				});
 		});
 	}
 };
@@ -268,5 +262,9 @@ body {
 
 .layui-input-block input {
 	border-radius: 6px;
+}
+
+.layui-timeline-title a{
+	font-size: 20px;
 }
 </style>
