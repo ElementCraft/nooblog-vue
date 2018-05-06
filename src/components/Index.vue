@@ -265,6 +265,6 @@ body {
 }
 
 .layui-timeline-title a{
-	font-size: 20px;
+	font-size: 18px;
 }
 </style>

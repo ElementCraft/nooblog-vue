@@ -70,7 +70,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-col-md10 layui-col-sm10 layui-col-xs12">
+			<div class="layui-col-md9 layui-col-sm9 layui-col-xs12">
 				<div class="main-content">
 					<div class="article-header">{{articleInfo.title}}</div>
 					<div class="article-info">
