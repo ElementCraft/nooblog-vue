@@ -20,7 +20,7 @@ Vue.component("EditorMDPreview", EditorMDPreview)
 Vue.config.productionTip = false
 Vue.prototype.globals = globals
 Vue.http.options.emulateJSON = false;
-Vue.http.options.root = "http://localhost:8088/"
+Vue.http.options.root = "http://119.23.149.25:8088/"
 
 var token = Vue.localStorage.get("token");
 if (token) {
